@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ดุลสมการเคมี ระดับมัธยมศึกษาปีที่ 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --card-bg: rgba(255, 255, 255, 0.94);
+  --card-inner-bg: #f8fafc;
+  --primary-teal: #00d084;
+  --purple-main: #8b5cf6;
+  --purple-dark: #5b21b6;
+  --purple-light: #f3e8ff;
+  --text-main: #0f172a;
+  --text-sub: #334155;
+  --border-light: rgba(255, 255, 255, 0.8);
+  --good: #059669;
+  --bad: #dc2626;
+  --amber-gold: #d97706;
+
+  /* สีกราเดียนท์ตั้งต้นของอะตอม */
+  --atom-custom-bg: null;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 14px;
+  font-family: 'Prompt', Tahoma, sans-serif;
+  color: var(--text-main);
+  position: relative;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #2e1065 0%, #5b21b6 35%, #7e22ce 70%, #9d174d 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 16s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-bg-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.floating-planet {
+  position: absolute;
+  top: 4%;
+  right: 8%;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e9d5ff, #7e22ce);
+  box-shadow: 0 0 50px rgba(233, 213, 255, 0.6), inset -12px -12px 25px rgba(0,0,0,0.4);
+  opacity: 0.7;
+  animation: planetFloat 12s ease-in-out infinite alternate;
+}
+@keyframes planetFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(30px) rotate(15deg); }
+}
+
+.floating-particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: floatUp 10s linear infinite;
+}
+.p1 { left: 8%; width: 24px; height: 24px; background: #f472b6; animation-duration: 8s; }
+.p2 { left: 28%; width: 38px; height: 38px; background: #c084fc; animation-duration: 12s; animation-delay: 2s; }
+.p3 { left: 58%; width: 20px; height: 20px; background: #38bdf8; animation-duration: 7s; animation-delay: 1s; }
+.p4 { left: 78%; width: 32px; height: 32px; background: #fde047; animation-duration: 10s; animation-delay: 3s; }
+.p5 { left: 92%; width: 26px; height: 26px; background: #34d399; animation-duration: 9s; animation-delay: 4s; }
+
+@keyframes floatUp {
+  0% { transform: translateY(105vh) scale(0.8) rotate(0deg); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.7; }
+  100% { transform: translateY(-10vh) scale(1.3) rotate(360deg); opacity: 0; }
+}
+
+.container { max-width: 1200px; margin: 0 auto; width: 100%; position: relative; z-index: 1; }
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 20px 24px;
+  border-radius: 28px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+  border: 3px solid #ffffff;
+}
+@media(min-width: 768px) {
+  .app-header { flex-direction: row; justify-content: space-between; align-items: center; padding: 22px 32px; }
+}
+.app-header h1 { margin: 0; font-size: 1.7rem; font-weight: 900; color: var(--purple-dark); text-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+@media(min-width: 768px) { .app-header h1 { font-size: 2.1rem; } }
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.lang-selector {
+  padding: 10px 14px;
+  border-radius: 50px;
+  border: 2px solid var(--purple-main);
+  background: #fff;
+  font-family: 'Prompt';
+  font-weight: 800;
+  color: var(--purple-dark);
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+.music-btn {
+  background: linear-gradient(135deg, #f43f5e, #ec4899);
+  border: 2px solid #fff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-family: 'Prompt';
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 6px 20px rgba(244, 63, 94, 0.4);
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+.music-btn:hover { transform: scale(1.05); }
+
+.library-tabs {
+  display: flex;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 10px;
+  border-radius: 22px;
+  backdrop-filter: blur(12px);
+  margin-bottom: 20px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.18);
+  border: 3px solid #ffffff;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.lib-tab {
+  border: none;
+  background: transparent;
+  font-family: 'Prompt', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 16px;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+@media(min-width: 768px) { .lib-tab { font-size: 1.2rem; padding: 14px 26px; } }
+.lib-tab.active {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.45);
+}
+
+.panel-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 28px;
+  padding: 22px;
+  margin-bottom: 24px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  border: 3px solid #ffffff;
+  display: none;
+  font-size: 1.15rem;
+}
+@media(min-width: 768px) { .panel-card { padding: 35px; font-size: 1.25rem; } }
+.panel-card.active { display: block; }
+
+h2 { color: var(--purple-dark); margin-top: 0; font-size: 1.6rem; font-weight: 900; }
+@media(min-width: 768px) { h2 { font-size: 1.9rem; } }
+h3 { color: var(--text-main); font-size: 1.25rem; font-weight: 800; }
+@media(min-width: 768px) { h3 { font-size: 1.4rem; } }
+
+.lab-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+@media(min-width: 900px) { .lab-grid { grid-template-columns: 1fr 1fr; gap: 28px; } }
+
+.equation-box {
+  background: #ffffff;
+  border: 3px dashed #8b5cf6;
+  border-radius: 20px;
+  padding: 18px;
+  text-align: center;
+  font-size: clamp(1.3rem, 4.5vw, 1.8rem);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
+}
+
+.coeff-input, .chalk-input {
+  width: 58px;
+  height: 58px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  border: 3px solid var(--purple-main);
+  border-radius: 14px;
+  color: var(--purple-dark);
+  background: #fff;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+@media(min-width: 768px) {
+  .coeff-input, .chalk-input { width: 66px; height: 60px; font-size: 1.7rem; }
+}
+
+.audit-matrix {
+  margin-top: 16px;
+  background: #f3e8ff;
+  border: 2px solid #d8b4fe;
+  border-radius: 18px;
+  padding: 16px;
+}
+.audit-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 2px dashed #d8b4fe;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+@media(min-width: 768px) { .audit-row { font-size: 1.15rem; } }
+.audit-row:last-child { border-bottom: none; }
+
+/* กล่องจำลองโมเลกุล 3D */
+.atom-visual-container {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border: 3px solid #c084fc;
+  border-radius: 24px;
+  padding: 20px;
+  margin-top: 16px;
+  color: #fff;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* แถบจานสีเลือกสีอะตอม 8 สี */
+.atom-palette-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0,0,0,0.35);
+  padding: 10px 14px;
+  border-radius: 18px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+@media(min-width: 500px) {
+  .atom-palette-toolbar { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+
+.atom-color-dots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-dot-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.color-dot-btn:hover, .color-dot-btn.active {
+  transform: scale(1.3);
+  box-shadow: 0 0 12px #fff;
+  border-color: #fde047;
+}
+
+.molecule-group-3d {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin: 14px 0;
+  flex-wrap: wrap;
+}
+
+.molecule-3d-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(192, 132, 252, 0.5);
+  border-radius: 18px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(10px);
+  cursor: grab;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  perspective: 800px;
+}
+.molecule-3d-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.5);
+  border-color: #00d084;
+}
+.molecule-3d-card:active { cursor: grabbing; }
+
+.atom-cluster-3d {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.atom-sphere-3d {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+  box-shadow: inset -5px -5px 12px rgba(0,0,0,0.6), 0 6px 15px rgba(0,0,0,0.4);
+  animation: floatAtom 3s ease-in-out infinite alternate;
+  transition: background 0.3s ease;
+}
+@media(min-width: 768px) {
+  .atom-sphere-3d { width: 38px; height: 38px; }
+}
+
+@keyframes floatAtom {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-5px) rotate(8deg); }
+}
+
+/* สีเริ่มต้นตามมาตรฐานธาตุเคมี */
+.atom-sphere-3d.h { background: radial-gradient(circle at 30% 30%, #93c5fd, #1d4ed8); }
+.atom-sphere-3d.o { background: radial-gradient(circle at 30% 30%, #fca5a5, #b91c1c); }
+.atom-sphere-3d.n { background: radial-gradient(circle at 30% 30%, #c4b5fd, #6d28d9); }
+.atom-sphere-3d.c { background: radial-gradient(circle at 30% 30%, #6ee7b7, #047857); }
+.atom-sphere-3d.na { background: radial-gradient(circle at 30% 30%, #fbcfe8, #be185d); }
+.atom-sphere-3d.cl { background: radial-gradient(circle at 30% 30%, #e2e8f0, #334155); }
+.atom-sphere-3d.mg { background: radial-gradient(circle at 30% 30%, #fef08a, #a16207); }
+.atom-sphere-3d.fe { background: radial-gradient(circle at 30% 30%, #fdba74, #c2410c); }
+
+/* สีกำหนดเองเมื่อผู้เล่นกดจานสี */
+.color-yellow { background: radial-gradient(circle at 30% 30%, #fef08a, #ca8a04) !important; }
+.color-red    { background: radial-gradient(circle at 30% 30%, #fca5a5, #dc2626) !important; }
+.color-pink   { background: radial-gradient(circle at 30% 30%, #fbcfe8, #db2777) !important; }
+.color-white  { background: radial-gradient(circle at 30% 30%, #ffffff, #94a3b8) !important; }
+.color-blue   { background: radial-gradient(circle at 30% 30%, #93c5fd, #2563eb) !important; }
+.color-orange { background: radial-gradient(circle at 30% 30%, #fed7aa, #ea580c) !important; }
+.color-purple { background: radial-gradient(circle at 30% 30%, #ddd6fe, #7c3aed) !important; }
+.color-black  { background: radial-gradient(circle at 30% 30%, #64748b, #0f172a) !important; }
+
+.control-3d-hint {
+  font-size: 0.85rem;
+  color: #c084fc;
+  text-align: center;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.btn {
+  border: none;
+  border-radius: 16px;
+  padding: 14px 24px;
+  font-family: 'Prompt', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  width: 100%;
+}
+@media(min-width: 768px) { .btn { width: auto; font-size: 1.2rem; padding: 14px 28px; } }
+.btn:active { transform: translateY(2px); }
+.btn-primary { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; }
+.btn-teal { background: linear-gradient(135deg, #00d084, #059669); color: #fff; box-shadow: 0 6px 18px rgba(0,208,132,0.35); }
+.btn-yellow { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.btn-secondary { background: #e2e8f0; color: #1e293b; }
+
+.button-row { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+@media(min-width: 500px) { .button-row { flex-direction: row; flex-wrap: wrap; } }
+
+.status-alert {
+  padding: 16px;
+  border-radius: 16px;
+  font-weight: 800;
+  margin-top: 16px;
+  background: #f1f5f9;
+  border-left: 6px solid #cbd5e1;
+  font-size: 1.1rem;
+}
+@media(min-width: 768px) { .status-alert { font-size: 1.2rem; } }
+.status-alert.good { background: #d1fae5; color: var(--good); border-left-color: var(--good); }
+.status-alert.bad { background: #fee2e2; color: var(--bad); border-left-color: var(--bad); }
+
+.chalkboard-box {
+  background: #143828;
+  border: 6px solid #78350f;
+  border-radius: 20px;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.7);
+  margin-bottom: 18px;
+}
+@media(min-width: 768px) { .chalkboard-box { border: 8px solid #78350f; padding: 32px 24px; } }
+.chalk-eq-fill {
+  color: #fef08a;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-weight: 900;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chalk-desc { color: #6ee7b7; font-size: 1.05rem; font-weight: 700; }
+@media(min-width: 768px) { .chalk-desc { font-size: 1.15rem; } }
+
+.timer-bar-container {
+  background: #e2e8f0;
+  border-radius: 12px;
+  height: 16px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 2px solid #cbd5e1;
+}
+.timer-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #00d084, #f59e0b, #ef4444);
+  transition: width 1s linear;
+}
+
+.wardrobe-panel {
+  background: #f3e8ff;
+  border: 2px solid #c084fc;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media(min-width:600px) {
+  .wardrobe-panel { flex-direction: row; align-items: center; }
+}
+
+.avatar-display {
+  font-size: 3rem;
+  background: #fff;
+  border-radius: 50%;
+  width: 75px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  position: relative;
+  flex-shrink: 0;
+  border: 3px solid #c084fc;
+}
+.equipped-item-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 1.3rem;
+  background: #fff;
+  border-radius: 50%;
+  padding: 3px;
+  border: 2px solid #c084fc;
+}
+
+.wardrobe-items-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.item-chip {
+  background: #fff;
+  border: 2px solid #d8b4fe;
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.item-chip:hover, .item-chip.active {
+  background: #8b5cf6;
+  color: #fff;
+  border-color: #6d28d9;
+  transform: scale(1.08);
+}
+
+.avatar-select-box {
+  background: var(--card-inner-bg);
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px 16px;
+  text-align: center;
+}
+@media(min-width: 768px) { .avatar-select-box { padding: 35px; } }
+.avatar-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+@media(min-width: 550px) {
+  .avatar-options { flex-direction: row; justify-content: center; gap: 24px; }
+}
+.avatar-card {
+  background: #fff;
+  border: 3px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 18px 24px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 1.15rem;
+  transition: all 0.2s;
+}
+@media(min-width: 768px) { .avatar-card { padding: 24px 35px; font-size: 1.3rem; } }
+.avatar-card.selected { border-color: #ec4899; background: #fce7f3; color: #db2777; box-shadow: 0 0 15px rgba(236, 72, 153, 0.3); }
+
+/* การ์ดชุดแต่งกายการ์ตูนแรร์ */
+.rare-outfit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.rare-outfit-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px dashed #f59e0b;
+  border-radius: 16px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+.rare-badge {
+  background: linear-gradient(135deg, #f59e0b, #ec4899);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 50px;
+  display: inline-block;
+  margin-top: 4px;
+}
+</style>
+</head>
+<body onclick="initAutoAudio()">
+
+<div class="animated-bg-overlay">
+  <div class="floating-planet"></div>
+  <div class="floating-particle p1"></div>
+  <div class="floating-particle p2"></div>
+  <div class="floating-particle p3"></div>
+  <div class="floating-particle p4"></div>
+  <div class="floating-particle p5"></div>
+</div>
+
+<div class="container">
+  <header class="app-header">
+    <div>
+      <h1 id="mainTitle">ดุลสมการเคมี ระดับมัธยมศึกษาปีที่ 3</h1>
+    </div>
+    <div class="header-controls">
+      <select id="langSelect" class="lang-selector" onchange="changeLanguage(this.value)">
+        <option value="th">🇹🇭 ไทย (Thai)</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="cn">🇨🇳 中文 (Chinese)</option>
+      </select>
+      <button class="music-btn" onclick="toggleBGM(event)" id="bgmBtn">🎵 เปิดดนตรีสดใส</button>
+    </div>
+  </header>
+
+  <div class="library-tabs">
+    <button class="lib-tab active" onclick="switchTab('learn')" id="tabLearn">Notes (เรียนรู้)</button>
+    <button class="lib-tab" onclick="switchTab('lab')" id="tabLab">Elements (ทดลอง)</button>
+    <button class="lib-tab" onclick="switchTab('challenge')" id="tabChal">Schemes (ท้าทาย)</button>
+    <button class="lib-tab" onclick="switchTab('quest')" id="tabQuest">Formulas (ภารกิจ)</button>
+    <button class="lib-tab" onclick="switchTab('summary')" id="tabSum">Library (สรุปผล)</button>
+  </div>
+
+  <div id="sec-learn" class="panel-card active">
+    <h2 id="learnH2">📖 บันทึกความรู้ & กฎทรงมวล</h2>
+    <div style="background:var(--purple-light); border:2px solid #d8b4fe; padding:18px; border-radius:18px; margin:16px 0; line-height:1.7;" id="learnDesc">
+      <b>กฎทรงมวล:</b> อะตอมไม่สูญหายหรือเกิดขึ้นใหม่ในการเกิดปฏิกิริยาเคมี การดุลสมการเคมีทำได้โดยเติมตัวเลขสัมประสิทธิ์ข้างหน้าสูตรเคมี เพื่อให้จำนวนอะตอมของแต่ละธาตุทั้งสองข้างเท่ากันพอดี
+    </div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-top:18px;">
+      <div style="background:#fff; border:2px solid #e2e8f0; padding:18px; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+        <h3 id="cardWater">💧 Water (น้ำ)</h3>
+        <p style="color:var(--text-sub); font-weight:700;">H₂ + O₂ → H₂O</p>
+        <button class="btn btn-secondary" style="font-size:1rem; padding:10px 18px; width:auto;" onclick="switchTab('lab')" id="btnTry1">ทดลองเลย ></button>
+      </div>
+      <div style="background:#fff; border:2px solid #e2e8f0; padding:18px; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+        <h3 id="cardAmmonia">🧪 Ammonia (แอมโมเนีย)</h3>
+        <p style="color:var(--text-sub); font-weight:700;">N₂ + H₂ → NH₃</p>
+        <button class="btn btn-secondary" style="font-size:1rem; padding:10px 18px; width:auto;" onclick="switchTab('lab')" id="btnTry2">ทดลองเลย ></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-lab" class="panel-card">
+    <h2 id="labH2">🧪 ห้องทดลองดุลสมการแบบเรียลไทม์ (เลือกได้ 10 สมการ)</h2>
+    <p style="color:var(--text-sub); font-weight:600;" id="labSub">เลือกสมการเคมีที่ต้องการทดลอง ปรับสัมประสิทธิ์ และสังเกตภาพโมเลกุล 3 มิติ</p>
+    
+    <div style="margin-bottom: 18px;">
+      <label for="reactionSelect" style="font-weight:800; color:var(--purple-dark);" id="labSelectLabel">เลือกสมการทดลอง (10 สมการ):</label>
+      <select id="reactionSelect" onchange="initLab()" style="width:100%; padding:14px; border-radius:16px; border:3px solid #c084fc; font-family:'Prompt'; font-weight:bold; margin-top:8px; background:#fff; font-size:1.1rem; color:var(--text-main);">
+        <option value="water">1. การเกิดน้ำ: H₂ + O₂ → H₂O</option>
+        <option value="ammonia">2. การเกิดแอมโมเนีย: N₂ + H₂ → NH₃</option>
+        <option value="methane">3. การเผาไหม้มีเทน: CH₄ + O₂ → CO₂ + H₂O</option>
+        <option value="salt">4. การเกิดเกลือแกง (โซเดียมคลอไรด์): Na + Cl₂ → NaCl</option>
+        <option value="rust">5. การเกิดสนิมเหล็ก: Fe + O₂ → Fe₂O₃</option>
+        <option value="mgo">6. การเกิดแมกนีเซียมออกไซด์: Mg + O₂ → MgO</option>
+        <option value="h2o2">7. การสลายตัวของไฮโดรเจนเปอร์ออกไซด์: H₂O₂ → H₂O + O₂</option>
+        <option value="al2o3">8. การเกิดอะลูมิเนียมออกไซด์: Al + O₂ → Al₂O₃</option>
+        <option value="kcl">9. การเกิดโพแทสเซียมคลอไรด์: K + Cl₂ → KCl</option>
+        <option value="zncl">10. สังกะสีทำปฏิกิริยากับกรดไฮโดรคลอริก: Zn + HCl → ZnCl₂ + H₂</option>
+      </select>
+    </div>
+
+    <div class="lab-grid">
+      <div>
+        <h3 id="eqTitleText">สมการเคมี</h3>
+        <div id="labEquation" class="equation-box"></div>
+        <div id="labSliders" style="display:grid; gap:12px; margin-top:16px;"></div>
+        
+        <div class="audit-matrix">
+          <b style="color:var(--purple-dark);" id="auditTitleText">📊 ตารางตรวจสอบจำนวนอะตอม:</b>
+          <div id="auditMatrixContent" style="margin-top:8px;"></div>
+        </div>
+
+        <div class="button-row">
+          <button class="btn btn-primary" onclick="checkLabBalance()" id="btnCheckBalance">🔍 ตรวจสอบความสมดุล</button>
+          <button class="btn btn-secondary" onclick="initLab()" id="btnResetLab">🔄 เริ่มใหม่</button>
+        </div>
+        <div id="labStatus" class="status-alert">ปรับตัวเลขสัมประสิทธิ์ให้อะตอมแต่ละชนิดเท่ากันทั้งสองข้าง</div>
+      </div>
+
+      <div>
+        <h3 id="visTitleText">🎨 ภาพจำลองโมเลกุล 3 มิติ อินเทอร์แอกทีฟ</h3>
+        <p style="color:#cbd5e1; font-size:0.95rem; font-weight:600;" id="visLegendText">✨ ทริป: คลิกที่การ์ดเพื่อหมุน 3D และเลือกเปลี่ยนสีอะตอมจากจานสีได้ตามใจชอบ!</p>
+        
+        <div class="atom-visual-container">
+          <!-- จานสีเปลี่ยนสีทรงกลมอะตอม (8 สีตามต้องการ) -->
+          <div class="atom-palette-toolbar">
+            <span style="font-size:0.9rem; font-weight:800; color:#fef08a;" id="atomPaletteLabel">🎨 จานสีอะตอม:</span>
+            <div class="atom-color-dots">
+              <div class="color-dot-btn" style="background:#fef08a;" onclick="setAtomColor('color-yellow')" title="สีเหลือง"></div>
+              <div class="color-dot-btn" style="background:#fca5a5;" onclick="setAtomColor('color-red')" title="สีแดง"></div>
+              <div class="color-dot-btn" style="background:#fbcfe8;" onclick="setAtomColor('color-pink')" title="สีชมพู"></div>
+              <div class="color-dot-btn" style="background:#ffffff;" onclick="setAtomColor('color-white')" title="สีขาว"></div>
+              <div class="color-dot-btn" style="background:#93c5fd;" onclick="setAtomColor('color-blue')" title="สีฟ้า"></div>
+              <div class="color-dot-btn" style="background:#fed7aa;" onclick="setAtomColor('color-orange')" title="สีส้ม"></div>
+              <div class="color-dot-btn" style="background:#ddd6fe;" onclick="setAtomColor('color-purple')" title="สีม่วง"></div>
+              <div class="color-dot-btn" style="background:#334155;" onclick="setAtomColor('color-black')" title="สีดำ"></div>
+              <div class="color-dot-btn" style="background:linear-gradient(45deg, #38bdf8, #f43f5e);" onclick="setAtomColor('default')" title="รีเซ็ตเป็นสีดั้งเดิม"></div>
+            </div>
+          </div>
+
+          <b style="color:#c084fc;" id="reactantTitleText">สารตั้งต้น (Reactants)</b>
+          <div id="leftVisualAtoms" class="molecule-group-3d"></div>
+          <hr style="border:0; border-top:2px dashed rgba(192, 132, 252, 0.4); margin:14px 0;">
+          <b style="color:#c084fc;" id="productTitleText">ผลิตภัณฑ์ (Products)</b>
+          <div id="rightVisualAtoms" class="molecule-group-3d"></div>
+          <div class="control-3d-hint" id="hint3D">🖱️ แตะ/คลิกที่การ์ดโมเลกุลเพื่อหมุน 3 มิติสุดมันส์</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-challenge" class="panel-card">
+    <h2 id="chalH2">💡 โหมดวิเคราะห์ข้อผิดพลาด (Schemes & Concept Check)</h2>
+    <p style="color:var(--text-sub); font-weight:600;" id="chalSub">ทดสอบความเข้าใจเชิงแนวคิดเพื่อป้องกันความคลาดเคลื่อนทางเคมี</p>
+    
+    <div style="background:#fffbeb; border:3px solid #fde68a; border-radius:20px; padding:20px; margin-bottom:18px;">
+      <h3 style="color:#b45309; margin-top:0;" id="chalQText">❓ คำถาม: ทำไมเราจึงห้ามเปลี่ยนเลขห้อยหลังสูตรเคมีเพื่อดุลสมการ?</h3>
+      <div style="margin-top:14px; display:grid; gap:12px;">
+        <label style="background:#fff; padding:16px; border-radius:14px; border:2px solid #fde68a; cursor:pointer; font-weight:700; display:block;">
+          <input type="radio" name="c1" onclick="checkChallenge(true)"> <span id="chalOpt1">ข. เพราะจะทำให้ชนิดและคุณสมบัติของสารเปลี่ยนไป เราต้องเปลี่ยนเฉพาะตัวเลขสัมประสิทธิ์ด้านหน้าเท่านั้น</span>
+        </label>
+        <label style="background:#fff; padding:16px; border-radius:14px; border:2px solid #fde68a; cursor:pointer; font-weight:700; display:block;">
+          <input type="radio" name="c1" onclick="checkChallenge(false)"> <span id="chalOpt2">ก. เปลี่ยนได้ตามสะดวกเพื่อให้คำนวณง่ายขึ้น</span>
+        </label>
+      </div>
+      <div id="chalFeedback" style="margin-top:14px; font-weight:bold; display:none;"></div>
+    </div>
+  </div>
+
+  <div id="sec-quest" class="panel-card">
+    <div id="avatarSelectView" class="avatar-select-box">
+      <h3 style="color:var(--purple-dark); margin-top:0;" id="avatarSelectTitle">🧙‍♂️ เลือกตัวละครนักเวทคู่หูของคุณ</h3>
+      <p style="color:var(--text-sub); font-weight:600;" id="avatarSelectSub">เลือกตัวละครเพื่อออกเดินทางดุลสมการ 15 ด่าน (มีเวลาจำกัดข้อละ 3 นาที!)</p>
+      <div class="avatar-options">
+        <div class="avatar-card" id="boyCard" onclick="selectAvatar('boy')">
+          <div style="font-size:3.5rem; margin-bottom:8px;">🧙‍♂️</div>
+          <span id="charArthur">อาเธอร์ (นักเวทชาย)</span>
+        </div>
+        <div class="avatar-card" id="girlCard" onclick="selectAvatar('girl')">
+          <div style="font-size:3.5rem; margin-bottom:8px;">🧙‍♀️</div>
+          <span id="charLuna">ลูน่า (นักเวทหญิง)</span>
+        </div>
+      </div>
+      <button class="btn btn-teal" style="margin-top:24px; font-size:1.2rem;" onclick="startQuestJourney()" id="btnStartQuest">🚀 เริ่มต้นผจญภัยภารกิจ</button>
+    </div>
+
+    <div id="questPlayView" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-weight:800; color:var(--text-sub);">
+        <span id="xpBadge" style="color:var(--purple-dark); font-size:1.2rem;">⭐ คะแนนสะสม: 0 คะแนน</span>
+        <span id="levelBadge" style="font-size:1.2rem;">ด่านที่ 1 จาก 15</span>
+      </div>
+
+      <div class="timer-bar-container">
+        <div id="timerBarFill" class="timer-bar-fill"></div>
+      </div>
+      <div style="text-align:right; font-weight:bold; color:var(--bad); margin-bottom:12px; font-size:1.1rem;" id="timerText">⏱️ เวลาเหลือ: 3 นาที 00 วินาที</div>
+
+      <div class="wardrobe-panel">
+        <div class="avatar-display" id="activeAvatarIcon">🧙‍♂️<span class="equipped-item-badge" id="equippedItemBadge" style="display:none;"></span></div>
+        <div style="flex:1;">
+          <b id="activeAvatarName" style="color:var(--purple-dark); font-size:1.2rem;">อาเธอร์</b><br>
+          <span id="wardrobeStatusText" style="color:var(--text-sub); font-weight:600; font-size:0.95rem;">ตู้เสื้อผ้าแรร์: คลิกเลือกเปลี่ยนไอเทมแต่งกายได้เลย</span>
+          <div id="wardrobeChipsContainer" class="wardrobe-items-selector"></div>
+        </div>
+      </div>
+
+      <h3 id="questTitleText" style="text-align:center; font-size:1.4rem; margin-bottom:14px; color:var(--purple-dark);">🌟 ด่านที่ 1</h3>
+      
+      <div class="chalkboard-box">
+        <div class="chalk-eq-fill" id="chalkFillEquation"></div>
+        <div class="chalk-desc" id="chalkDescText">พิมพ์เติมสัมประสิทธิ์ตัวเลขลงในช่องว่างให้สมการดุลก่อนหมดเวลา!</div>
+      </div>
+
+      <div id="questFeedbackAlert" class="status-alert" style="display:none; margin-bottom:16px;"></div>
+
+      <div class="button-row" style="justify-content:center;">
+        <button class="btn btn-teal" onclick="submitFillQuestAnswer()" id="btnSubmitAns">⚡ ตรวจคำตอบด่านนี้</button>
+        <button class="btn btn-yellow" onclick="showNpcHint()" id="btnHint">💡 แสดงคำใบ้</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-summary" class="panel-card">
+    <h2 id="sumH2">📊 My Library • สรุปผลการเรียนรู้และเกียรติยศ</h2>
+    <div style="background:linear-gradient(135deg, #fef3c7, #fce7f3); border-radius:20px; padding:22px; text-align:center; margin-bottom:24px; border:3px solid #fde68a;">
+      <h3 id="summaryRankTitle" style="margin:0 0 8px; color:#b45309; font-size:1.4rem;">🌟 นักเวทฝึกหัดแห่งห้องทดลองเคมี</h3>
+      <p id="summaryRankDesc" style="margin:0; font-weight:700; color:#78350f;">ทำภารกิจและทดลองดุลสมการเพื่อสะสมเหรียญตราเกียรติยศและชุดแต่งกายแรร์!</p>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+      <div style="background:#faf5ff; padding:20px; border-radius:20px; text-align:center; border:2px solid #e9d5ff;">
+        <span style="color:var(--text-sub); font-weight:700;" id="statScoreLabel">คะแนนรวมทั้งหมด</span>
+        <div id="statScore" style="font-size:2.2rem; font-weight:900; color:var(--purple-dark); margin-top:6px;">0 คะแนน</div>
+      </div>
+      <div style="background:#faf5ff; padding:20px; border-radius:20px; text-align:center; border:2px solid #e9d5ff;">
+        <span style="color:var(--text-sub); font-weight:700;" id="statProgLabel">สถานะความสำเร็จ</span>
+        <div id="statProgress" style="font-size:1.3rem; font-weight:800; color:var(--good); margin-top:6px;">กำลังเริ่มต้น</div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px; background:#fff; border:2px solid #e2e8f0; border-radius:20px; padding:20px;">
+      <h3 style="color:var(--purple-dark); margin-top:0;" id="rareOutfitShowcaseTitle">👔 ตู้โชว์ชุดแต่งกายการ์ตูนแรร์ที่สะสมได้</h3>
+      <div id="rareOutfitGrid" class="rare-outfit-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentLang = 'th';
+let selectedAtomColorClass = 'default';
+
+const translations = {
+  th: {
+    mainTitle: "ดุลสมการเคมี ระดับมัธยมศึกษาปีที่ 3",
+    musicBtn: "🎵 เปิดดนตรีสดใส",
+    musicBtnOff: "🔇 ปิดดนตรีสดใส",
+    tabs: ["Notes (เรียนรู้)", "Elements (ทดลอง)", "Schemes (ท้าทาย)", "Formulas (ภารกิจ)", "Library (สรุปผล)"],
+    learnH2: "📖 บันทึกความรู้ & กฎทรงมวล",
+    learnDesc: "<b>กฎทรงมวล:</b> อะตอมไม่สูญหายหรือเกิดขึ้นใหม่ในการเกิดปฏิกิริยาเคมี การดุลสมการเคมีทำได้โดยเติมตัวเลขสัมประสิทธิ์ข้างหน้าสูตรเคมี เพื่อให้จำนวนอะตอมของแต่ละธาตุทั้งสองข้างเท่ากันพอดี",
+    cardWater: "💧 Water (น้ำ)",
+    cardAmmonia: "🧪 Ammonia (แอมโมเนีย)",
+    btnTry: "ทดลองเลย >",
+    labH2: "🧪 ห้องทดลองดุลสมการแบบเรียลไทม์ (เลือกได้ 10 สมการ)",
+    labSub: "เลือกสมการเคมีที่ต้องการทดลอง ปรับสัมประสิทธิ์ และสังเกตภาพโมเลกุล 3 มิติ",
+    labSelectLabel: "เลือกสมการทดลอง (10 สมการ):",
+    eqTitleText: "สมการเคมี",
+    auditTitleText: "📊 ตารางตรวจสอบจำนวนอะตอม:",
+    btnCheckBalance: "🔍 ตรวจสอบความสมดุล",
+    btnResetLab: "🔄 เริ่มใหม่",
+    visTitleText: "🎨 ภาพจำลองโมเลกุล 3 มิติ อินเทอร์แอกทีฟ",
+    visLegendText: "✨ ทริป: คลิกที่การ์ดเพื่อหมุน 3D และเลือกเปลี่ยนสีอะตอมจากจานสีได้ตามใจชอบ!",
+    atomPaletteLabel: "🎨 จานสีอะตอม:",
+    reactantTitleText: "สารตั้งต้น (Reactants)",
+    productTitleText: "ผลิตภัณฑ์ (Products)",
+    hint3D: "🖱️ แตะ/คลิกที่การ์ดโมเลกุลเพื่อหมุน 3 มิติสุดมันส์",
+    chalH2: "💡 โหมดวิเคราะห์ข้อผิดพลาด (Schemes & Concept Check)",
+    chalSub: "ทดสอบความเข้าใจเชิงแนวคิดเพื่อป้องกันความคลาดเคลื่อนทางเคมี",
+    chalQText: "❓ คำถาม: ทำไมเราจึงห้ามเปลี่ยนเลขห้อยหลังสูตรเคมีเพื่อดุลสมการ?",
+    chalOpt1: "ข. เพราะจะทำให้ชนิดและคุณสมบัติของสารเปลี่ยนไป เราต้องเปลี่ยนเฉพาะตัวเลขสัมประสิทธิ์ด้านหน้าเท่านั้น",
+    chalOpt2: "ก. เปลี่ยนได้ตามสะดวกเพื่อให้คำนวณง่ายขึ้น",
+    avatarSelectTitle: "🧙‍♂️ เลือกตัวละครนักเวทคู่หูของคุณ",
+    avatarSelectSub: "เลือกตัวละครเพื่อออกเดินทางดุลสมการ 15 ด่าน (มีเวลาจำกัดข้อละ 3 นาที!)",
+    charArthur: "อาเธอร์ (นักเวทชาย)",
+    charLuna: "ลูน่า (นักเวทหญิง)",
+    btnStartQuest: "🚀 เริ่มต้นผจญภัยภารกิจ",
+    xpBadge: "⭐ คะแนนสะสม: ",
+    pts: " คะแนน",
+    levelPrefix: "ด่านที่ ",
+    levelMid: " จาก ",
+    timerText: "⏱️ เวลาเหลือ: ",
+    min: " นาที ",
+    sec: " วินาที",
+    wardrobeText: "ไอเทมสะสม: ยังไม่มี (ผ่านด่านเพื่อรับไอเทมการแต่งกายแรร์)",
+    chalkDescText: "พิมพ์เติมสัมประสิทธิ์ตัวเลขลงในช่องว่างให้สมการดุลก่อนหมดเวลา!",
+    btnSubmitAns: "⚡ ตรวจคำตอบด่านนี้",
+    btnHint: "💡 แสดงคำใบ้",
+    sumH2: "📊 My Library • สรุปผลการเรียนรู้และเกียรติยศ",
+    summaryRankTitle: "🌟 นักเวทฝึกหัดแห่งห้องทดลองเคมี",
+    summaryRankDesc: "ทำภารกิจและทดลองดุลสมการเพื่อสะสมเหรียญตราเกียรติยศและชุดแต่งกายแรร์!",
+    statScoreLabel: "คะแนนรวมทั้งหมด",
+    statProgLabel: "สถานะความสำเร็จ",
+    rareOutfitShowcaseTitle: "👔 ตู้โชว์ชุดแต่งกายการ์ตูนแรร์ที่สะสมได้",
+    statusStart: "กำลังเริ่มต้น",
+    statusGreat: "ยอดเยี่ยมมาก"
+  },
+  en: {
+    mainTitle: "ดุลสมการเคมี ระดับมัธยมศึกษาปีที่ 3",
+    musicBtn: "🎵 Play Music",
+    musicBtnOff: "🔇 Stop Music",
+    tabs: ["Notes", "Elements", "Schemes", "Formulas", "Library"],
+    learnH2: "📖 Knowledge Notes & Law of Conservation of Mass",
+    learnDesc: "<b>Law of Conservation of Mass:</b> Atoms are neither created nor destroyed in a chemical reaction. Balancing equations requires adding coefficients in front of formulas.",
+    cardWater: "💧 Water",
+    cardAmmonia: "🧪 Ammonia",
+    btnTry: "Try Now >",
+    labH2: "🧪 Real-time Chemical Equation Lab (10 Equations)",
+    labSub: "Select an equation, adjust coefficients, and observe 3D molecular structures.",
+    labSelectLabel: "Select Equation (10 Equations):",
+    eqTitleText: "Chemical Equation",
+    auditTitleText: "📊 Atom Count Audit Table:",
+    btnCheckBalance: "🔍 Check Balance",
+    btnResetLab: "🔄 Reset",
+    visTitleText: "🎨 Interactive 3D Molecular Simulation",
+    visLegendText: "✨ Tip: Click molecule cards to spin 3D and pick atom colors from palette!",
+    atomPaletteLabel: "🎨 Atom Color Palette:",
+    reactantTitleText: "Reactants",
+    productTitleText: "Products",
+    hint3D: "🖱️ Tap/Click molecule cards to rotate in 3D!",
+    chalH2: "💡 Concept Check & Error Analysis",
+    chalSub: "Test your conceptual understanding to avoid chemical errors.",
+    chalQText: "❓ Question: Why must we NOT change the subscript numbers behind chemical formulas to balance equations?",
+    chalOpt1: "B. Because it changes the identity and properties of the substance. Only coefficients can be changed.",
+    chalOpt2: "A. You can change them anytime for convenience.",
+    avatarSelectTitle: "🧙‍♂️ Choose Your Mage Partner",
+    avatarSelectSub: "Choose a character to embark on 15 equation-balancing quests (3 minutes per quest!)",
+    charArthur: "Arthur (Male Mage)",
+    charLuna: "Luna (Female Mage)",
+    btnStartQuest: "🚀 Start Quest Adventure",
+    xpBadge: "⭐ Total Score: ",
+    pts: " pts",
+    levelPrefix: "Level ",
+    levelMid: " of ",
+    timerText: "⏱️ Time Left: ",
+    min: " min ",
+    sec: " sec",
+    wardrobeText: "Collected Items: None (Complete quests to earn rare fashion items)",
+    chalkDescText: "Type coefficients into the blanks to balance the equation before time runs out!",
+    btnSubmitAns: "⚡ Check Answer",
+    btnHint: "💡 Show Hint",
+    sumH2: "📊 My Library • Learning Summary & Honors",
+    summaryRankTitle: "🌟 Chemistry Apprentice Mage",
+    summaryRankDesc: "Complete quests and balance equations to earn rare outfits!",
+    statScoreLabel: "Total Score",
+    statProgLabel: "Success Status",
+    rareOutfitShowcaseTitle: "👔 Rare Outfit Collection Showcase",
+    statusStart: "Getting Started",
+    statusGreat: "Excellent"
+  },
+  cn: {
+    mainTitle: "ดุลสมการเคมี ระดับมัธยมศึกษาปีที่ 3",
+    musicBtn: "🎵 播放音乐",
+    musicBtnOff: "🔇 关闭音乐",
+    tabs: ["笔记 (学习)", "元素 (实验)", "挑战 (挑战)", "公式 (任务)", "资料库 (总结)"],
+    learnH2: "📖 知识笔记 & 质量守恒定律",
+    learnDesc: "<b>质量守恒定律：</b> 在化学反应中，原子既不会被创造也不会被消灭。配平化学方程式需要通过ใน化学式前添加系数来使两边原子数相等。",
+    cardWater: "💧 水 (Water)",
+    cardAmmonia: "🧪 氨气 (Ammonia)",
+    btnTry: "立即实验 >",
+    labH2: "🧪 实时化学方程式实验室 (共10个方程式)",
+    labSub: "选择方程式，调整系数，观察3D分子结构。",
+    labSelectLabel: "选择方程式 (10个):",
+    eqTitleText: "化学方程式",
+    auditTitleText: "📊 原子数量核对表:",
+    btnCheckBalance: "🔍 检查平衡",
+    btnResetLab: "🔄 重新开始",
+    visTitleText: "🎨 交互式3D分子模拟",
+    visLegendText: "✨ 提示：点击卡片可旋转3D，并可在调色板中更改原子颜色！",
+    atomPaletteLabel: "🎨 原子调色板:",
+    reactantTitleText: "反应物 (Reactants)",
+    productTitleText: "生成物 (Products)",
+    hint3D: "🖱️ 点击分子卡片进行3D旋转！",
+    chalH2: "💡 概念检查与错误分析",
+    chalSub: "测试你的概念理解，避免化学计算错误。",
+    chalQText: "❓ 问题：为什么我们在配平化学方程式时绝不能改变化学式后面的下标数字？",
+    chalOpt1: "B. 因为这会改变物质的种类和性质，我们只能改变前面的系数。",
+    chalOpt2: "A. 为了计算方便，可以随意更改下标。",
+    avatarSelectTitle: "🧙‍♂️ 选择你的法师伙伴",
+    avatarSelectSub: "选择角色开启15关方程式配平之旅 (每关限时3分钟！)",
+    charArthur: "亚瑟 (男法师)",
+    charLuna: "露娜 (女法师)",
+    btnStartQuest: "🚀 开始任务冒险",
+    xpBadge: "⭐ 积分: ",
+    pts: " 分",
+    levelPrefix: "第 ",
+    levelMid: " 关，共 ",
+    timerText: "⏱️ 剩余时间: ",
+    min: " 分 ",
+    sec: " 秒",
+    wardrobeText: "已收集道具: 无 (通过关卡获得稀有服装)",
+    chalkDescText: "ใน空格中填入数字系数，ใน时间耗尽前完成方程式配平！",
+    btnSubmitAns: "⚡ 提交本关答案",
+    btnHint: "💡 显示提示",
+    sumH2: "📊 我的资料库 • 学习总结与荣誉",
+    summaryRankTitle: "🌟 化学实验室见习法师",
+    summaryRankDesc: "完成任务并配平化学方程式以赢得稀有套装！",
+    statScoreLabel: "总积分",
+    statProgLabel: "通关状态",
+    rareOutfitShowcaseTitle: "👔 稀有卡通服装展示柜",
+    statusStart: "刚刚起步",
+    statusGreat: "非常优秀"
+  }
+};
+
+function setAtomColor(colorClass) {
+  selectedAtomColorClass = colorClass;
+  updateAtomVisualsAndAudit();
+}
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  
+  document.getElementById("mainTitle").textContent = t.mainTitle;
+  document.getElementById("bgmBtn").textContent = isPlayingBGM ? t.musicBtnOff : t.musicBtn;
+  
+  const tabs = t.tabs;
+  document.getElementById("tabLearn").textContent = tabs[0];
+  document.getElementById("tabLab").textContent = tabs[1];
+  document.getElementById("tabChal").textContent = tabs[2];
+  document.getElementById("tabQuest").textContent = tabs[3];
+  document.getElementById("tabSum").textContent = tabs[4];
+
+  document.getElementById("learnH2").innerHTML = t.learnH2;
+  document.getElementById("learnDesc").innerHTML = t.learnDesc;
+  document.getElementById("cardWater").textContent = t.cardWater;
+  document.getElementById("cardAmmonia").textContent = t.cardAmmonia;
+  document.getElementById("btnTry1").textContent = t.btnTry;
+  document.getElementById("btnTry2").textContent = t.btnTry;
+
+  document.getElementById("labH2").textContent = t.labH2;
+  document.getElementById("labSub").textContent = t.labSub;
+  document.getElementById("labSelectLabel").textContent = t.labSelectLabel;
+  document.getElementById("eqTitleText").textContent = t.eqTitleText;
+  document.getElementById("auditTitleText").textContent = t.auditTitleText;
+  document.getElementById("btnCheckBalance").textContent = t.btnCheckBalance;
+  document.getElementById("btnResetLab").textContent = t.btnResetLab;
+
+  document.getElementById("visTitleText").textContent = t.visTitleText;
+  document.getElementById("visLegendText").textContent = t.visLegendText;
+  document.getElementById("atomPaletteLabel").textContent = t.atomPaletteLabel;
+  document.getElementById("reactantTitleText").textContent = t.reactantTitleText;
+  document.getElementById("productTitleText").textContent = t.productTitleText;
+  document.getElementById("hint3D").textContent = t.hint3D;
+
+  document.getElementById("chalH2").textContent = t.chalH2;
+  document.getElementById("chalSub").textContent = t.chalSub;
+  document.getElementById("chalQText").textContent = t.chalQText;
+  document.getElementById("chalOpt1").textContent = t.chalOpt1;
+  document.getElementById("chalOpt2").textContent = t.chalOpt2;
+
+  document.getElementById("avatarSelectTitle").textContent = t.avatarSelectTitle;
+  document.getElementById("avatarSelectSub").textContent = t.avatarSelectSub;
+  document.getElementById("charArthur").textContent = t.charArthur;
+  document.getElementById("charLuna").textContent = t.charLuna;
+  document.getElementById("btnStartQuest").textContent = t.btnStartQuest;
+
+  document.getElementById("btnSubmitAns").textContent = t.btnSubmitAns;
+  document.getElementById("btnHint").textContent = t.btnHint;
+
+  document.getElementById("sumH2").textContent = t.sumH2;
+  document.getElementById("summaryRankTitle").textContent = t.summaryRankTitle;
+  document.getElementById("summaryRankDesc").textContent = t.summaryRankDesc;
+  document.getElementById("statScoreLabel").textContent = t.statScoreLabel;
+  document.getElementById("statProgLabel").textContent = t.statProgLabel;
+  document.getElementById("rareOutfitShowcaseTitle").textContent = t.rareOutfitShowcaseTitle;
+
+  updateQuestLabelsDynamic();
+  renderRareOutfitShowcase();
+}
+
+let audioCtx = null;
+let isPlayingBGM = false;
+let bgmInterval = null;
+let hasAutoStarted = false;
+
+function initAutoAudio() {
+  if (!hasAutoStarted) {
+    hasAutoStarted = true;
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    isPlayingBGM = true;
+    const btn = document.getElementById("bgmBtn");
+    if(btn) btn.textContent = translations[currentLang].musicBtnOff;
+    startCuteMelody();
+  }
+}
+
+function toggleBGM(e) {
+  if(e) e.stopPropagation();
+  const btn = document.getElementById("bgmBtn");
+  const t = translations[currentLang];
+  if (!isPlayingBGM) {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    isPlayingBGM = true;
+    if(btn) btn.textContent = t.musicBtnOff;
+    startCuteMelody();
+  } else {
+    isPlayingBGM = false;
+    if(btn) btn.textContent = t.musicBtn;
+    if (bgmInterval) clearInterval(bgmInterval);
+  }
+}
+
+function startCuteMelody() {
+  const cuteNotes = [523.25, 659.25, 783.99, 1046.50, 880.00, 698.46, 783.99];
+  let index = 0;
+  if(bgmInterval) clearInterval(bgmInterval);
+  bgmInterval = setInterval(() => {
+    if (!isPlayingBGM) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = cuteNotes[index % cuteNotes.length];
+      gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+      index++;
+    } catch(e) {}
+  }, 300);
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.panel-card').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.lib-tab').forEach(b => b.classList.remove('active'));
+  
+  const targetPanel = document.getElementById('sec-' + tabId);
+  if(targetPanel) targetPanel.classList.add('active');
+  
+  const tabMap = { learn: 0, lab: 1, challenge: 2, quest: 3, summary: 4 };
+  const buttons = document.querySelectorAll('.lib-tab');
+  if(buttons[tabMap[tabId]]) {
+    buttons[tabMap[tabId]].classList.add('active');
+  }
+
+  if(tabId !== 'quest' && timerInterval) {
+    clearInterval(timerInterval);
+  }
+  if(tabId === 'summary') {
+    renderRareOutfitShowcase();
+  }
+}
+
+const labReactions = {
+  water: { names: ["H₂", "O₂", "H₂O"], atoms: [{H:2}, {O:2}, {H:2, O:1}], side: [0, 0, 1], defaultCoeff: [1, 1, 1] },
+  ammonia: { names: ["N₂", "H₂", "NH₃"], atoms: [{N:2}, {H:2}, {N:1, H:3}], side: [0, 0, 1], defaultCoeff: [1, 1, 1] },
+  methane: { names: ["CH₄", "O₂", "CO₂", "H₂O"], atoms: [{C:1, H:4}, {O:2}, {C:1, O:2}, {H:2, O:1}], side: [0, 0, 1, 1], defaultCoeff: [1, 1, 1, 1] },
+  salt: { names: ["Na", "Cl₂", "NaCl"], atoms: [{Na:1}, {Cl:2}, {Na:1, Cl:1}], side: [0, 0, 1], defaultCoeff: [1, 1, 1] },
+  rust: { names: ["Fe", "O₂", "Fe₂O₃"], atoms: [{Fe:1}, {O:2}, {Fe:2, O:3}], side: [0, 0, 1], defaultCoeff: [1, 1, 1] },
+  mgo: { names: ["Mg", "O₂", "MgO"], atoms: [{Mg:1}, {O:2}, {Mg:1, O:1}], side: [0, 0, 1], defaultCoeff: [1, 1, 1] },
+  h2o2: { names: ["H₂O₂", "H₂O", "O₂"], atoms: [{H:2, O:2}, {H:2, O:1}, {O:2}], side: [0, 1, 1], defaultCoeff: [1, 1, 1] },
+  al2o3: { names: ["Al", "O₂", "Al₂O₃"], atoms: [{Al:1}, {O:2}, {Al:2, O:3}], side: [0, 0, 1], defaultCoeff: [1, 1, 1] },
+  kcl: { names: ["K", "Cl₂", "KCl"], atoms: [{K:1}, {Cl:2}, {K:1, Cl:1}], side: [0, 0, 1], defaultCoeff: [1, 1, 1] },
+  zncl: { names: ["Zn", "HCl", "ZnCl₂", "H₂"], atoms: [{Zn:1}, {H:1, Cl:1}, {Zn:1, Cl:2}, {H:2}], side: [0, 0, 1, 1], defaultCoeff: [1, 1, 1, 1] }
+};
+
+let currentLabKey = "water";
+let currentCoeffs = [1, 1, 1];
+
+function initLab() {
+  const selectElem = document.getElementById("reactionSelect");
+  if(selectElem) {
+    currentLabKey = selectElem.value;
+  }
+  const r = labReactions[currentLabKey];
+  currentCoeffs = [...r.defaultCoeff];
+  renderLabUI();
+}
+
+function renderLabUI() {
+  const r = labReactions[currentLabKey];
+  let eqHtml = "";
+  r.names.forEach((name, i) => {
+    eqHtml += `<span style="display:inline-flex; align-items:center; gap:4px;">
+      <input type="number" min="1" max="10" value="${currentCoeffs[i]}" class="coeff-input" data-index="${i}" oninput="updateCoeffFromInput(event)" inputmode="numeric">
+      <span>${formatFormula(name)}</span>
+    </span>`;
+    if (i < r.names.length - 1) {
+      eqHtml += (r.side[i] === r.side[i+1]) ? " + " : " → ";
+    }
+  });
+  const eqEl = document.getElementById("labEquation");
+  if(eqEl) eqEl.innerHTML = eqHtml;
+
+  let sliderHtml = "";
+  r.names.forEach((name, i) => {
+    sliderHtml += `<div style="background:#f8fafc; padding:12px 16px; border-radius:14px; border:2px solid #e2e8f0;">
+      <label style="display:flex; justify-content:space-between; font-weight:700;"><span>${formatFormula(name)}</span> <b id="sliderVal${i}" style="color:var(--purple-dark);">${currentCoeffs[i]}</b></label>
+      <input type="range" min="1" max="10" value="${currentCoeffs[i]}" data-index="${i}" oninput="updateCoeffFromSlider(event)" style="width:100%; accent-color:var(--purple-main); cursor:pointer; margin-top:6px;">
+    </div>`;
+  });
+  const sliderEl = document.getElementById("labSliders");
+  if(sliderEl) sliderEl.innerHTML = sliderHtml;
+  
+  updateAtomVisualsAndAudit();
+  const statusEl = document.getElementById("labStatus");
+  if(statusEl) {
+    statusEl.className = "status-alert";
+    statusEl.textContent = currentLang === 'en' ? "Adjust coefficients so that each element's atoms are equal on both sides." : (currentLang === 'cn' ? "调整系数，使两侧每种元素的原子数相等。" : "ปรับตัวเลขสัมประสิทธิ์ให้อะตอมแต่ละชนิดเท่ากันทั้งสองข้าง");
+  }
+}
+
+function formatFormula(str) { return str.replace(/(\d+)/g, '<sub>$1</sub>'); }
+
+function updateCoeffFromInput(e) {
+  let idx = +e.target.dataset.index;
+  let val = Math.max(1, parseInt(e.target.value) || 1);
+  currentCoeffs[idx] = val;
+  syncControls(idx, val);
+  updateAtomVisualsAndAudit();
+}
+
+function updateCoeffFromSlider(e) {
+  let idx = +e.target.dataset.index;
+  let val = +e.target.value;
+  currentCoeffs[idx] = val;
+  syncControls(idx, val);
+  updateAtomVisualsAndAudit();
+}
+
+function syncControls(idx, val) {
+  const inputs = document.querySelectorAll(".coeff-input");
+  if(inputs[idx]) inputs[idx].value = val;
+  const valSpan = document.getElementById("sliderVal" + idx);
+  if(valSpan) valSpan.textContent = val;
+}
+
+function trigger3DSpin(cardEl) {
+  const cluster = cardEl.querySelector('.atom-cluster-3d');
+  if (!cluster) return;
+  
+  let randomX = Math.floor(Math.random() * 360);
+  let randomY = Math.floor(Math.random() * 360);
+  cluster.style.transform = `rotateX(${randomX}deg) rotateY(${randomY}deg) scale(1.15)`;
+  
+  setTimeout(() => {
+    cluster.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+  }, 600);
+}
+
+function updateAtomVisualsAndAudit() {
+  const r = labReactions[currentLabKey];
+  let leftCounts = {}, rightCounts = {};
+  r.atoms.forEach((atomObj, i) => {
+    let target = r.side[i] === 0 ? leftCounts : rightCounts;
+    Object.entries(atomObj).forEach(([atom, num]) => {
+      target[atom] = (target[atom] || 0) + (num * currentCoeffs[i]);
+    });
+  });
+
+  let allElements = [...new Set([...Object.keys(leftCounts), ...Object.keys(rightCounts)])];
+  let auditHtml = "";
+  allElements.forEach(el => {
+    let lVal = leftCounts[el] || 0;
+    let rVal = rightCounts[el] || 0;
+    let isEqual = lVal === rVal;
+    let matchText = currentLang === 'en' ? (isEqual ? '✓ Equal' : '✗ Not Equal') : (currentLang === 'cn' ? (isEqual ? '✓ 相等' : '✗ 不相等') : (isEqual ? '✓ เท่ากัน' : '✗ ไม่เท่า'));
+    let subText = currentLang === 'en' ? `Reactants: ${lVal} | Products: ${rVal}` : (currentLang === 'cn' ? `反应物: ${lVal} | 生成物: ${rVal}` : `สารตั้งต้น: ${lVal} | ผลิตภัณฑ์: ${rVal}`);
+    auditHtml += `<div class="audit-row">
+      <span><b>${el}</b> (${subText})</span>
+      <span style="color:${isEqual ? 'var(--good)' : 'var(--bad)'};">${matchText}</span>
+    </div>`;
+  });
+  const auditEl = document.getElementById("auditMatrixContent");
+  if(auditEl) auditEl.innerHTML = auditHtml;
+
+  let leftHtml = "", rightHtml = "";
+  r.names.forEach((name, i) => {
+    let count = currentCoeffs[i];
+    let moleculeCards = "";
+    for(let m=0; m<count; m++) {
+      let atomsHtml = "";
+      Object.entries(r.atoms[i]).forEach(([atomType, atomNum]) => {
+        for(let a=0; a<atomNum; a++) {
+          let customClass = selectedAtomColorClass !== 'default' ? selectedAtomColorClass : atomType.toLowerCase();
+          atomsHtml += `<span class="atom-sphere-3d ${customClass}" title="${atomType}"></span>`;
+        }
+      });
+      moleculeCards += `<div class="molecule-3d-card" onclick="trigger3DSpin(this)">
+        <span style="font-size:0.9rem; font-weight:800; color:#fef08a;">${formatFormula(name)}</span>
+        <div class="atom-cluster-3d">${atomsHtml}</div>
+      </div>`;
+    }
+    if(r.side[i] === 0) {
+      leftHtml += `<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">${moleculeCards}</div>`;
+    } else {
+      rightHtml += `<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">${moleculeCards}</div>`;
+    }
+  });
+  const leftVis = document.getElementById("leftVisualAtoms");
+  const rightVis = document.getElementById("rightVisualAtoms");
+  if(leftVis) leftVis.innerHTML = leftHtml || "-";
+  if(rightVis) rightVis.innerHTML = rightHtml || "-";
+}
+
+function checkLabBalance() {
+  const r = labReactions[currentLabKey];
+  let leftCounts = {}, rightCounts = {};
+  r.atoms.forEach((atomObj, i) => {
+    let target = r.side[i] === 0 ? leftCounts : rightCounts;
+    Object.entries(atomObj).forEach(([atom, num]) => {
+      target[atom] = (target[atom] || 0) + (num * currentCoeffs[i]);
+    });
+  });
+  let allEqual = true;
+  let keys = [...new Set([...Object.keys(leftCounts), ...Object.keys(rightCounts)])];
+  keys.forEach(k => { if((leftCounts[k] || 0) !== (rightCounts[k] || 0)) allEqual = false; });
+
+  const statusEl = document.getElementById("labStatus");
+  if(statusEl) {
+    if(allEqual) {
+      statusEl.className = "status-alert good";
+      statusEl.textContent = currentLang === 'en' ? "🎉 Excellent! The equation is completely balanced!" : (currentLang === 'cn' ? "🎉 太棒了！方程式已完全配平！" : "🎉 ยอดเยี่ยม! สมการสมดุลสมบูรณ์แล้ว!");
+    } else {
+      statusEl.className = "status-alert bad";
+      statusEl.textContent = currentLang === 'en' ? "❌ Not balanced yet. Check the audit table and adjust numbers." : (currentLang === 'cn' ? "❌ 尚未平衡。请检查核对表并调整数字。" : "❌ ยังไม่สมดุล ตรวจสอบตารางตรวจสอบอะตอมแล้วปรับตัวเลขใหม่นะ");
+    }
+  }
+}
+
+function checkChallenge(isCorrect) {
+  const fb = document.getElementById("chalFeedback");
+  if(fb) {
+    fb.style.display = "block";
+    if(isCorrect) {
+      fb.style.color = "var(--good)";
+      fb.textContent = currentLang === 'en' ? "✅ Correct! Subscripts cannot be changed to preserve the mass law." : (currentLang === 'cn' ? "✅ 回答正确！为保持质量守恒定律，不能改变下标。" : "✅ ถูกต้อง! ห้ามเปลี่ยนเลขห้อยเด็ดขาดเพื่อรักษากฎทรงมวล");
+    } else {
+      fb.style.color = "var(--bad)";
+      fb.textContent = currentLang === 'en' ? "❌ Incorrect. Changing subscripts alters the chemical substance." : (currentLang === 'cn' ? "❌ 回答错误。改变下标会改变化学物质本身。" : "❌ ไม่ถูกต้อง การเปลี่ยนเลขห้อยจะเปลี่ยนชนิดของสารเคมีทันที");
+    }
+  }
+}
+
+/* รายการด่าน 15 ด่านพร้อมเพิ่มไอเทมแฟชั่นแรร์ */
+const questLevels = [
+  { title: "การเกิดน้ำ / Water Formation", names: ["H₂", "O₂", "H₂O"], sides: [0, 0, 1], ans: [2, 1, 2], hint: "Make 2 water molecules first, then balance hydrogen.", item: "🧢 หมวกเป็ดน้อย", isRare: false },
+  { title: "การเกิดแอมโมเนีย / Ammonia Formation", names: ["N₂", "H₂", "NH₃"], sides: [0, 0, 1], ans: [1, 3, 2], hint: "Start with N₂, then make 2 molecules of NH₃.", item: "👓 แว่นตาสายลับ", isRare: false },
+  { title: "การเผาไหม้มีเทน / Methane Combustion", names: ["CH₄", "O₂", "CO₂", "H₂O"], sides: [0, 0, 1, 1], ans: [1, 2, 1, 2], hint: "Balance Carbon first, then Hydrogen and Oxygen.", item: "🪄 คทาเวทดาวตก", isRare: false },
+  { title: "การเกิดเกลือแกง / Salt Formation", names: ["Na", "Cl₂", "NaCl"], sides: [0, 0, 1], ans: [2, 1, 2], hint: "Cl₂ has 2 chlorine atoms, put 2 in front of NaCl.", item: "🧣 ผ้าพันคอเวทมนตร์", isRare: false },
+  { title: "การเกิดสนิมเหล็ก / Rust Formation", names: ["Fe", "O₂", "Fe₂O₃"], sides: [0, 0, 1], ans: [4, 3, 2], hint: "Make oxygen equal to 6 atoms on both sides.", item: "👑 มงกุฎทองคำแรร์", isRare: true },
+  { title: "สลายตัวไฮโดรเจนเปอร์ออกไซด์ / H₂O₂ Decomposition", names: ["H₂O₂", "H₂O", "O₂"], sides: [0, 1, 1], ans: [2, 2, 1], hint: "Start with 2 molecules of H₂O₂.", item: "🎒 กระเป๋ามิสเตอร์รี่", isRare: false },
+  { title: "การเกิดแมกนีเซียมออกไซด์ / MgO Formation", names: ["Mg", "O₂", "MgO"], sides: [0, 0, 1], ans: [2, 1, 2], hint: "O₂ has 2 atoms, you need 2 units of MgO.", item: "🎧 หูฟังนีออนไซเบอร์", isRare: false },
+  { title: "การเกิดอะลูมิเนียมออกไซด์ / Al₂O₃ Formation", names: ["Al", "O₂", "Al₂O₃"], sides: [0, 0, 1], ans: [4, 3, 2], hint: "Put 2 in front of Al₂O₃ to get 6 oxygens.", item: "🦄 เขายูนิคอร์นทองคำแรร์", isRare: true },
+  { title: "การเกิดโพแทสเซียมคลอไรด์ / KCl Formation", names: ["K", "Cl₂", "KCl"], sides: [0, 0, 1], ans: [2, 1, 2], hint: "Balance chlorine with 2 in front of KCl.", item: "🔮 ลูกแก้วพยากรณ์", isRare: false },
+  { title: "สังกะสีทำปฏิกิริยากับกรด / Zn & Acid", names: ["Zn", "HCl", "ZnCl₂", "H₂"], sides: [0, 0, 1, 1], ans: [1, 2, 1, 1], hint: "ZnCl₂ has 2 chlorine atoms, use 2 HCl.", item: "🛡️ โล่อัศวินเคมี", isRare: false },
+  { title: "การเกิดแคลเซียมออกไซด์ / CaO Formation", names: ["Ca", "O₂", "CaO"], sides: [0, 0, 1], ans: [2, 1, 2], hint: "Make 2 units of CaO to match oxygen.", item: "🐉 มงกุฎมังกรโบราณแรร์", isRare: true },
+  { title: "การเกิดน้ำ (ซ้ำทวน) / Water Review", names: ["H₂", "O₂", "H₂O"], sides: [0, 0, 1], ans: [2, 1, 2], hint: "Use ratio 2:1:2", item: "🍀 ใบโคลเวอร์โชคดี", isRare: false },
+  { title: "การเกิดคาร์บอนไดออกไซด์ / CO₂ Formation", names: ["C", "O₂", "CO₂"], sides: [0, 0, 1], ans: [1, 1, 1], hint: "Elements are already balanced in 1:1:1 ratio.", item: "🦉 หมวกนกฮูกรอบรู้", isRare: false },
+  { title: "การเกิดฟอสฟอรัสเพนตะออกไซด์ / P₂O₅ Formation", names: ["P", "O₂", "P₂O₅"], sides: [0, 0, 1], ans: [4, 5, 2], hint: "Use 2 P₂O₅ and 5 O₂.", item: "💎 คทาคริสตัลแรร์", isRare: true },
+  { title: "การเผาไหม้โพรเพน (บอสใหญ่) / Propane Combustion", names: ["C₃H₈", "O₂", "CO₂", "H₂O"], sides: [0, 0, 1, 1], ans: [1, 5, 3, 4], hint: "Balance C=3, H=4 first, then put 5 in front of O₂.", item: "👑 เสื้อคลุมจักรพรรดิแรร์สุดยอด", isRare: true }
+];
+
+let selectedAvatarType = 'boy';
+let currentQuestIdx = 0;
+let totalScore = 0;
+let collectedItems = [];
+let equippedItem = "";
+let timeLeft = 180; // เวลาต่อด่าน 3 นาที (180 วินาที)
+let timerInterval = null;
+
+function selectAvatar(type) {
+  selectedAvatarType = type;
+  const boyC = document.getElementById("boyCard");
+  const girlC = document.getElementById("girlCard");
+  if(boyC) boyC.className = "avatar-card" + (type === 'boy' ? " selected" : "");
+  if(girlC) girlC.className = "avatar-card" + (type === 'girl' ? " selected" : "");
+}
+
+function startQuestJourney() {
+  const avView = document.getElementById("avatarSelectView");
+  const playView = document.getElementById("questPlayView");
+  if(avView) avView.style.display = "none";
+  if(playView) playView.style.display = "block";
+  
+  const nameEl = document.getElementById("activeAvatarName");
+  if(nameEl) {
+    nameEl.textContent = selectedAvatarType === 'boy' ? 
+      (currentLang === 'en' ? "Arthur" : (currentLang === 'cn' ? "亚瑟" : "อาเธอร์")) : 
+      (currentLang === 'en' ? "Luna" : (currentLang === 'cn' ? "露娜" : "ลูน่า"));
+  }
+  updateAvatarDisplayIcon();
+  loadQuestLevel();
+}
+
+function updateAvatarDisplayIcon() {
+  const iconEl = document.getElementById("activeAvatarIcon");
+  if(!iconEl) return;
+  let baseIcon = selectedAvatarType === 'boy' ? '🧙‍♂️' : '🧙‍♀️';
+  let badgeHtml = equippedItem ? `<span class="equipped-item-badge">${equippedItem.split(' ')[0]}</span>` : '';
+  iconEl.innerHTML = `${baseIcon}${badgeHtml}`;
+}
+
+function equipItem(itemName) {
+  equippedItem = itemName;
+  updateAvatarDisplayIcon();
+  renderWardrobeChips();
+}
+
+function renderWardrobeChips() {
+  const container = document.getElementById("wardrobeChipsContainer");
+  if(!container) return;
+  if(collectedItems.length === 0) {
+    container.innerHTML = `<span style="font-size:0.9rem; color:var(--text-sub);">${translations[currentLang].wardrobeText}</span>`;
+    return;
+  }
+  let html = "";
+  collectedItems.forEach(item => {
+    let isActive = equippedItem === item ? "active" : "";
+    html += `<span class="item-chip ${isActive}" onclick="equipItem('${item}')">${item}</span>`;
+  });
+  container.innerHTML = html;
+}
+
+function updateQuestLabelsDynamic() {
+  const t = translations[currentLang];
+  const xpBg = document.getElementById("xpBadge");
+  const lvlBg = document.getElementById("levelBadge");
+  if(xpBg) xpBg.textContent = `${t.xpBadge}${totalScore}${t.pts}`;
+  if(lvlBg) lvlBg.textContent = `${t.levelPrefix}${currentQuestIdx + 1}${t.levelMid}15`;
+  renderWardrobeChips();
+}
+
+function loadQuestLevel() {
+  const t = translations[currentLang];
+  
+  // ด่านสุดท้าย สรุปผลคะแนนและโชว์ชุดการ์ตูนแต่งกายแรร์ทั้งหมด (เมื่อเล่นครบ 15 ด่าน)
+  if (currentQuestIdx >= questLevels.length) {
+    if(timerInterval) clearInterval(timerInterval);
+    const playView = document.getElementById("questPlayView");
+    if(playView) {
+      let rareCount = collectedItems.filter(item => item.includes("แรร์") || item.includes("Rare")).length;
+      playView.innerHTML = `
+        <div style="text-align:center; padding:24px; background:linear-gradient(135deg, #fff, #f3e8ff); border-radius:24px; border:3px solid #8b5cf6;">
+          <div style="font-size:4.5rem; margin-bottom:10px;">🏆👑</div>
+          <h2 style="color:var(--purple-dark); font-size:2.2rem; margin-bottom:8px;">${currentLang === 'en' ? 'Quest Completed! Master Chemist!' : (currentLang === 'cn' ? '恭喜通关！化学大宗师！' : 'ภารกิจสำเร็จสมบูรณ์! ปรมาจารย์นักเวทเคมี')}</h2>
+          
+          <div style="background:#fef3c7; border:2px solid #f59e0b; border-radius:20px; padding:18px; margin:16px 0; font-size:1.3rem; font-weight:800; color:#b45309;">
+            ⭐ คะแนนสะสมทั้งหมด: ${totalScore} คะแนน<br>
+            👔 ไอเทมแฟชั่นที่ปลดล็อก: ${collectedItems.length}/15 ชิ้น (ไอเทมแรร์ ${rareCount} ชิ้น)
+          </div>
+
+          <h3 style="color:var(--purple-dark); margin-top:16px;">✨ ชุดแต่งกายแรร์สุดเท่ที่คุณสวมใส่:</h3>
+          <div style="font-size:3.8rem; margin:12px 0;">${selectedAvatarType === 'boy' ? '🧙‍♂️' : '🧙‍♀️'} ${equippedItem ? equippedItem.split(' ')[0] : '✨'}</div>
+
+          <button class="btn btn-primary" style="margin-top:20px; font-size:1.2rem; padding:14px 32px;" onclick="location.reload()">🔄 ${currentLang === 'en' ? 'Play Again' : (currentLang === 'cn' ? '重新开始' : 'เล่นใหม่อีกครั้ง')}</button>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  const q = questLevels[currentQuestIdx];
+  const titleText = document.getElementById("questTitleText");
+  const fbAlert = document.getElementById("questFeedbackAlert");
+  const chalkDesc = document.getElementById("chalkDescText");
+  
+  if(titleText) titleText.textContent = `🌟 Level ${currentQuestIdx + 1}: ${q.title}`;
+  if(chalkDesc) chalkDesc.textContent = t.chalkDescText;
+  
+  if(fbAlert) {
+    fbAlert.style.display = "none";
+    fbAlert.className = "status-alert";
+  }
+  updateQuestLabelsDynamic();
+
+  let eqHtml = "";
+  q.names.forEach((name, j) => {
+    eqHtml += `<span style="display:inline-flex; align-items:center; gap:6px;">
+      <input type="number" min="1" max="20" class="chalk-input fill-q-input" data-i="${j}" placeholder="?" inputmode="numeric" />
+      <span>${formatFormula(name)}</span>
+    </span>`;
+    if (j < q.names.length - 1) {
+      eqHtml += (q.sides[j] === q.sides[j+1]) ? ' <span style="color:#a9dfbf;">+</span> ' : ' <span style="color:#a9dfbf;">→</span> ';
+    }
+  });
+  const chalkEq = document.getElementById("chalkFillEquation");
+  if(chalkEq) chalkEq.innerHTML = eqHtml;
+
+  // เวลาต่อด่าน 3 นาที (180 วินาที)
+  timeLeft = 180;
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    let pct = (timeLeft / 180) * 100;
+    const barFill = document.getElementById("timerBarFill");
+    const timerTxt = document.getElementById("timerText");
+    
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    let formattedSec = seconds < 10 ? '0' + seconds : seconds;
+
+    if(barFill) barFill.style.width = pct + "%";
+    if(timerTxt) timerTxt.textContent = `${t.timerText}${minutes}${t.min}${formattedSec}${t.sec}`;
+
+    if(timeLeft <= 0) {
+      clearInterval(timerInterval);
+      const fb = document.getElementById("questFeedbackAlert");
+      if(fb) {
+        fb.className = "status-alert bad";
+        fb.style.display = "block";
+        fb.textContent = currentLang === 'en' ? "⏰ Time's up (3 mins)! Try this level again." : (currentLang === 'cn' ? "⏰ 3分钟时间到！请重试本关。" : "⏰ หมดเวลา 3 นาที! ลองใหม่อีกครั้งในด่านนี้นะ");
+      }
+      setTimeout(() => {
+        loadQuestLevel();
+      }, 2000);
+    }
+  }, 1000);
+}
+
+function submitFillQuestAnswer() {
+  const q = questLevels[currentQuestIdx];
+  const inputs = [...document.querySelectorAll(".fill-q-input")];
+  const userVals = inputs.map(inp => Number(inp.value.trim()));
+
+  const fb = document.getElementById("questFeedbackAlert");
+  if (inputs.some(inp => inp.value.trim() === "")) {
+    if(fb) {
+      fb.className = "status-alert bad";
+      fb.style.display = "block";
+      fb.textContent = currentLang === 'en' ? "⚠️ Please fill in all coefficient blanks!" : (currentLang === 'cn' ? "⚠️ 请填满所有系数空格！" : "⚠️ กรุณากรอกตัวเลขสัมประสิทธิ์ให้ครบทุกช่อง!");
+    }
+    return;
+  }
+
+  const isCorrect = userVals.length === q.ans.length && userVals.every((val, idx) => val === q.ans[idx]);
+  if(fb) fb.style.display = "block";
+
+  if (isCorrect) {
+    if(timerInterval) clearInterval(timerInterval);
+    
+    let timeBonus = Math.floor(timeLeft / 2); // คำนวณโบนัสเวลาคงเหลือ
+    let earnedPoints = 100 + timeBonus;
+    totalScore += earnedPoints;
+
+    if(!collectedItems.includes(q.item)) {
+      collectedItems.push(q.item);
+    }
+    equipItem(q.item);
+
+    if(fb) {
+      fb.className = "status-alert good";
+      let rareText = q.isRare ? " 🌟 [ได้รับไอเทมแรร์!]" : "";
+      fb.innerHTML = currentLang === 'en' ? `🎉 Correct! Answer: <b>[ ${q.ans.join(", ")} ]</b><br>✨ Earned +${earnedPoints} pts (Time bonus +${timeBonus})${rareText}` : (currentLang === 'cn' ? `🎉 回答正确！答案: <b>[ ${q.ans.join(", ")} ]</b><br>✨ 获得 +${earnedPoints} 分 (时间奖励 +${timeBonus})${rareText}` : `🎉 ถูกต้อง! เฉลย: <b>[ ${q.ans.join(", ")} ]</b><br>✨ รับคะแนน +${earnedPoints} คะแนน (โบนัสเวลา +${timeBonus})${rareText}`);
+    }
+    inputs.forEach(inp => inp.disabled = true);
+
+    const statScoreEl = document.getElementById("statScore");
+    const statProgEl = document.getElementById("statProgress");
+    if(statScoreEl) statScoreEl.textContent = `${totalScore} ${translations[currentLang].pts}`;
+    if(statProgEl) statProgEl.textContent = currentQuestIdx >= 10 ? translations[currentLang].statusGreat : translations[currentLang].statusStart;
+
+    setTimeout(() => {
+      currentQuestIdx++;
+      loadQuestLevel();
+    }, 2200);
+
+  } else {
+    if(fb) {
+      fb.className = "status-alert bad";
+      fb.textContent = currentLang === 'en' ? "❌ Incorrect. Check atom counts and try again!" : (currentLang === 'cn' ? "❌ 回答错误。请检查原子数并重试！" : "❌ ยังไม่ถูกต้อง ลองตรวจสอบจำนวนอะตอมใหม่อีกครั้งนะ");
+    }
+  }
+}
+
+function showNpcHint() {
+  const q = questLevels[currentQuestIdx];
+  alert(`🦉 Owl's Hint / 🦉 聪明的猫头鹰提示:\n${q.hint}`);
+}
+
+function renderRareOutfitShowcase() {
+  const showcase = document.getElementById("rareOutfitGrid");
+  if(!showcase) return;
+  let html = "";
+  questLevels.forEach(q => {
+    let isUnlocked = collectedItems.includes(q.item);
+    let opacity = isUnlocked ? "1" : "0.45";
+    let statusText = isUnlocked ? "✅ ปลดล็อกแล้ว" : "🔒 ยังไม่ปลดล็อก";
+    let rareBadge = q.isRare ? `<span class="rare-badge">RARE</span>` : '';
+    
+    html += `<div class="rare-outfit-card" style="opacity:${opacity};">
+      <div style="font-size:2.2rem;">${q.item.split(' ')[0]}</div>
+      <div style="font-size:0.85rem; margin-top:4px;">${q.item.split(' ').slice(1).join(' ')}</div>
+      ${rareBadge}
+      <div style="font-size:0.75rem; color:var(--text-sub); margin-top:4px;">${statusText}</div>
+    </div>`;
+  });
+  showcase.innerHTML = html;
+}
+
+initLab();
+</script>
+
+</body>
+</html>
